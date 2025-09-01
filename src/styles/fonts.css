@@ -1,0 +1,13 @@
+@font-face {
+  font-family: 'TQ-Kingston';
+  src: url('/fonts/TQ-Kingston.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Simplesnails';
+  src: url('/fonts/Simplesnails.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
