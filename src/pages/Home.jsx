@@ -3,7 +3,7 @@ import { Header } from "../components/header"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { HeroBanner } from "../components/HeroBanner"
+import HeroBanner from "../components/HeroBanner"
 import {
   Camera,
   Palette,
@@ -89,7 +89,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#F5F1EB]">
-      <Header />
+      {/* <Header /> */}
 
       {/* Hero */}
       <HeroBanner />
