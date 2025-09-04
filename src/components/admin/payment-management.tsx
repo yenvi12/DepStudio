@@ -23,13 +23,54 @@ import {
   Calendar,
   Eye,
   RefreshCw,
+  X,
 } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../../components/ui/dialog"
+import { Label } from "../../components/ui/label"
+
+interface Transaction {
+  id: string
+  studio: string
+  customer: string
+  amount: number
+  commission: number
+  status: "completed" | "pending" | "failed"
+  date: string
+  time: string
+  method: string
+  service: string
+}
+
+interface PayoutRequest {
+  id: string
+  studio: string
+  amount: number
+  requestDate: string
+  status: "pending" | "approved" | "rejected"
+  bankAccount: string
+  bankName: string
+}
 
 export function PaymentManagement() {
   const [selectedTab, setSelectedTab] = useState("overview")
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
 
+  // States for Dialogs
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null)
+  const [showViewTransactionDialog, setShowViewTransactionDialog] = useState(false)
+
+  const [selectedPayout, setSelectedPayout] = useState<PayoutRequest | null>(null)
+  const [showViewPayoutDialog, setShowViewPayoutDialog] = useState(false)
+  const [showProcessPayoutDialog, setShowProcessPayoutDialog] = useState(false)
+  
   const paymentStats = {
     totalRevenue: 125000000,
     pendingPayouts: 15000000,
@@ -39,7 +80,7 @@ export function PaymentManagement() {
     commission: 12500000,
   }
 
-  const recentTransactions = [
+  const recentTransactions: Transaction[] = [
     {
       id: "TXN001",
       studio: "Bella Studio",
@@ -90,7 +131,7 @@ export function PaymentManagement() {
     },
   ]
 
-  const payoutRequests = [
+  const payoutRequests: PayoutRequest[] = [
     {
       id: "PO001",
       studio: "Bella Studio",
@@ -117,6 +158,7 @@ export function PaymentManagement() {
       pending: { color: "bg-yellow-100 text-yellow-800", icon: Clock, label: "Đang xử lý" },
       failed: { color: "bg-red-100 text-red-800", icon: AlertCircle, label: "Thất bại" },
       approved: { color: "bg-blue-100 text-blue-800", icon: CheckCircle, label: "Đã duyệt" },
+      rejected: { color: "bg-red-100 text-red-800", icon: X, label: "Đã từ chối" },
     }
     const { color, icon: Icon, label } = config[status as keyof typeof config]
     return (
@@ -135,6 +177,33 @@ export function PaymentManagement() {
     const matchesStatus = statusFilter === "all" || transaction.status === statusFilter
     return matchesSearch && matchesStatus
   })
+
+  // Event handlers
+  const handleViewTransaction = (transaction: Transaction) => {
+    setSelectedTransaction(transaction)
+    setShowViewTransactionDialog(true)
+  }
+
+  const handleRetryTransaction = (transaction: Transaction) => {
+    console.log(`Đang thử lại giao dịch thất bại: ${transaction.id}`)
+    // Thêm logic API call để xử lý lại giao dịch tại đây
+  }
+
+  const handleViewPayout = (payout: PayoutRequest) => {
+    setSelectedPayout(payout)
+    setShowViewPayoutDialog(true)
+  }
+
+  const handleProcessPayout = (payout: PayoutRequest) => {
+    setSelectedPayout(payout)
+    setShowProcessPayoutDialog(true)
+  }
+
+  const handleConfirmProcessPayout = () => {
+    console.log(`Đã duyệt yêu cầu rút tiền: ${selectedPayout?.id}`)
+    // Thêm logic API call để xử lý duyệt yêu cầu rút tiền
+    setShowProcessPayoutDialog(false)
+  }
 
   return (
     <div className="space-y-6">
@@ -238,9 +307,15 @@ export function PaymentManagement() {
       {/* Tabs */}
       <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-3 bg-gray-100">
-          <TabsTrigger value="overview">Tổng quan</TabsTrigger>
-          <TabsTrigger value="transactions">Giao dịch</TabsTrigger>
-          <TabsTrigger value="payouts">Rút tiền</TabsTrigger>
+          <TabsTrigger value="overview"
+          className="text-black data-[state=active]:bg-amber-100 data-[state=active]:text-black"
+          >Tổng quan</TabsTrigger>
+          <TabsTrigger value="transactions"
+          className="text-black data-[state=active]:bg-amber-100 data-[state=active]:text-black"
+          >Giao dịch</TabsTrigger>
+          <TabsTrigger value="payouts"
+          className="text-black data-[state=active]:bg-amber-100 data-[state=active]:text-black"
+          >Rút tiền</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
@@ -426,11 +501,11 @@ export function PaymentManagement() {
                         </TableCell>
                         <TableCell>
                           <div className="flex gap-2">
-                            <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                            <Button variant="outline" size="sm" className="h-8 w-8 p-0" onClick={() => handleViewTransaction(transaction)}>
                               <Eye className="h-4 w-4" />
                             </Button>
                             {transaction.status === "failed" && (
-                              <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                              <Button variant="outline" size="sm" className="h-8 w-8 p-0" onClick={() => handleRetryTransaction(transaction)}>
                                 <RefreshCw className="h-4 w-4" />
                               </Button>
                             )}
@@ -483,7 +558,7 @@ export function PaymentManagement() {
                         <div className="flex gap-2">
                           {request.status === "pending" && (
                             <>
-                              <Button size="sm" className="bg-green-600 hover:bg-green-700">
+                              <Button size="sm" className="bg-green-600 hover:bg-green-700" onClick={() => handleProcessPayout(request)}>
                                 Duyệt
                               </Button>
                               <Button variant="outline" size="sm">
@@ -491,7 +566,7 @@ export function PaymentManagement() {
                               </Button>
                             </>
                           )}
-                          <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                          <Button variant="outline" size="sm" className="h-8 w-8 p-0" onClick={() => handleViewPayout(request)}>
                             <Eye className="h-4 w-4" />
                           </Button>
                         </div>
@@ -504,6 +579,118 @@ export function PaymentManagement() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Dialog to view Transaction details */}
+      <Dialog open={showViewTransactionDialog} onOpenChange={setShowViewTransactionDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Chi tiết giao dịch #{selectedTransaction?.id}</DialogTitle>
+            <DialogDescription>
+              Thông tin chi tiết của giao dịch.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedTransaction && (
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Studio</Label>
+                <span className="col-span-3 font-semibold">{selectedTransaction.studio}</span>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Khách hàng</Label>
+                <span className="col-span-3">{selectedTransaction.customer}</span>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Số tiền</Label>
+                <span className="col-span-3 text-green-600 font-semibold">
+                  {selectedTransaction.amount.toLocaleString("vi-VN")}đ
+                </span>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Hoa hồng</Label>
+                <span className="col-span-3 text-blue-600 font-semibold">
+                  {selectedTransaction.commission.toLocaleString("vi-VN")}đ
+                </span>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Thời gian</Label>
+                <span className="col-span-3">{selectedTransaction.date} {selectedTransaction.time}</span>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Trạng thái</Label>
+                <div className="col-span-3">{getStatusBadge(selectedTransaction.status)}</div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Phương thức</Label>
+                <span className="col-span-3">{selectedTransaction.method}</span>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button onClick={() => setShowViewTransactionDialog(false)}>Đóng</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog to view Payout details */}
+      <Dialog open={showViewPayoutDialog} onOpenChange={setShowViewPayoutDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Chi tiết yêu cầu rút tiền #{selectedPayout?.id}</DialogTitle>
+            <DialogDescription>
+              Thông tin chi tiết của yêu cầu rút tiền.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedPayout && (
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Studio</Label>
+                <span className="col-span-3 font-semibold">{selectedPayout.studio}</span>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Số tiền</Label>
+                <span className="col-span-3 text-green-600 font-semibold">
+                  {selectedPayout.amount.toLocaleString("vi-VN")}đ
+                </span>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Tài khoản</Label>
+                <span className="col-span-3 font-mono">{selectedPayout.bankAccount}</span>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Ngân hàng</Label>
+                <span className="col-span-3">{selectedPayout.bankName}</span>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Ngày yêu cầu</Label>
+                <span className="col-span-3">{selectedPayout.requestDate}</span>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Trạng thái</Label>
+                <div className="col-span-3">{getStatusBadge(selectedPayout.status)}</div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button onClick={() => setShowViewPayoutDialog(false)}>Đóng</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog to process Payout */}
+      <Dialog open={showProcessPayoutDialog} onOpenChange={setShowProcessPayoutDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Xác nhận duyệt yêu cầu rút tiền</DialogTitle>
+            <DialogDescription>
+              Bạn có chắc chắn muốn duyệt yêu cầu rút tiền #<span className="font-semibold">{selectedPayout?.id}</span> này không? Thao tác này sẽ chuyển tiền cho studio và không thể hoàn tác.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowProcessPayoutDialog(false)}>Hủy</Button>
+            <Button variant="default" onClick={handleConfirmProcessPayout}>Xác nhận</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

@@ -112,24 +112,8 @@ export function Header() {
       <span>Hồ sơ cá nhân</span>
     </Link>
   </DropdownMenuItem>
-  <DropdownMenuItem asChild>
-    <Link to="/bookings" className="flex items-center space-x-2 text-white">
-      <Calendar className="w-4 h-4" />
-      <span>Lịch đã đặt</span>
-    </Link>
-  </DropdownMenuItem>
-  <DropdownMenuItem asChild>
-    <Link to="/favorites" className="flex items-center space-x-2 text-white">
-      <Heart className="w-4 h-4" />
-      <span>Yêu thích</span>
-    </Link>
-  </DropdownMenuItem>
-  <DropdownMenuItem asChild>
-    <Link to="/settings" className="flex items-center space-x-2 text-white">
-      <Settings className="w-4 h-4" />
-      <span>Cài đặt</span>
-    </Link>
-  </DropdownMenuItem>
+ 
+
   <DropdownMenuItem
     onClick={logout}
     className="flex items-center space-x-2 text-red-400 hover:text-red-300"

@@ -20,7 +20,6 @@ import {
 import { Link } from "react-router-dom"
 import "../styles/fonts.css";
 import { Search } from "lucide-react";
-
 export default function Home() {
   const featuredServices = [
     {
@@ -90,7 +89,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#F5F1EB]">
       {/* <Header /> */}
-
+      <Header />
       {/* Hero */}
       <HeroBanner />
 

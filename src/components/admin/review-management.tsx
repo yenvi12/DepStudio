@@ -8,7 +8,8 @@ import { Input } from "../../components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs"
 import { Avatar, AvatarFallback } from "../../components/ui/avatar"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../../components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "../../components/ui/dialog"
+import { Textarea } from "../../components/ui/textarea" // Thêm component Textarea
 import {
   Star,
   TrendingUp,
@@ -17,83 +18,111 @@ import {
   Eye,
   Flag,
   Search,
-  Filter,
   ThumbsUp,
   Calendar,
   Building2,
+  Send,
 } from "lucide-react"
+
+// Mock data ban đầu
+const initialReviews = [
+  {
+    id: "RV001",
+    customer: "Nguyễn Thị Lan",
+    studio: "Bella Studio",
+    service: "Makeup cô dâu",
+    rating: 5,
+    comment:
+      "Dịch vụ tuyệt vời! Makeup rất đẹp và tự nhiên. Nhân viên nhiệt tình, chuyên nghiệp. Sẽ quay lại lần sau.",
+    date: "2024-01-20",
+    status: "published",
+    helpful: 15,
+    reported: 0,
+    response: null,
+  },
+  {
+    id: "RV002",
+    customer: "Trần Văn Nam",
+    studio: "Glamour Makeup",
+    service: "Chụp ảnh cưới",
+    rating: 4,
+    comment: "Chất lượng ảnh đẹp, góc chụp đa dạng. Tuy nhiên thời gian chờ hơi lâu.",
+    date: "2024-01-19",
+    status: "published",
+    helpful: 8,
+    reported: 0,
+    response: "Cảm ơn anh đã đánh giá. Chúng tôi sẽ cải thiện thời gian phục vụ.",
+  },
+  {
+    id: "RV003",
+    customer: "Lê Thị Hoa",
+    studio: "Royal Wedding",
+    service: "Thuê váy cưới",
+    rating: 2,
+    comment: "Váy không đúng như hình, chất liệu kém. Nhân viên thái độ không tốt.",
+    date: "2024-01-18",
+    status: "flagged",
+    helpful: 3,
+    reported: 5,
+    response: null,
+  },
+  {
+    id: "RV004",
+    customer: "Phạm Minh Tuấn",
+    studio: "Dream Studio",
+    service: "Makeup dự tiệc",
+    rating: 5,
+    comment: "Rất hài lòng với dịch vụ. Makeup đẹp, bền màu cả ngày. Giá cả hợp lý.",
+    date: "2024-01-17",
+    status: "published",
+    helpful: 12,
+    reported: 0,
+    response: "Cảm ơn anh đã tin tưởng Dream Studio!",
+  },
+]
 
 export function ReviewManagement() {
   const [selectedTab, setSelectedTab] = useState("overview")
   const [searchTerm, setSearchTerm] = useState("")
   const [ratingFilter, setRatingFilter] = useState("all")
+  const [reviews, setReviews] = useState(initialReviews) // Sử dụng useState để quản lý reviews
 
-  const reviewStats = {
-    totalReviews: 1847,
-    averageRating: 4.6,
-    fiveStars: 1203,
-    fourStars: 398,
-    threeStars: 156,
-    twoStars: 67,
-    oneStar: 23,
-    flaggedReviews: 12,
+  // Cập nhật trạng thái đánh giá
+  const updateReviewStatus = (id: string, newStatus: string) => {
+    setReviews(reviews.map((review) =>
+      review.id === id ? { ...review, status: newStatus, reported: 0 } : review
+    ))
   }
 
-  const reviews = [
-    {
-      id: "RV001",
-      customer: "Nguyễn Thị Lan",
-      studio: "Bella Studio",
-      service: "Makeup cô dâu",
-      rating: 5,
-      comment:
-        "Dịch vụ tuyệt vời! Makeup rất đẹp và tự nhiên. Nhân viên nhiệt tình, chuyên nghiệp. Sẽ quay lại lần sau.",
-      date: "2024-01-20",
-      status: "published",
-      helpful: 15,
-      reported: 0,
-      response: null,
-    },
-    {
-      id: "RV002",
-      customer: "Trần Văn Nam",
-      studio: "Glamour Makeup",
-      service: "Chụp ảnh cưới",
-      rating: 4,
-      comment: "Chất lượng ảnh đẹp, góc chụp đa dạng. Tuy nhiên thời gian chờ hơi lâu.",
-      date: "2024-01-19",
-      status: "published",
-      helpful: 8,
-      reported: 0,
-      response: "Cảm ơn anh đã đánh giá. Chúng tôi sẽ cải thiện thời gian phục vụ.",
-    },
-    {
-      id: "RV003",
-      customer: "Lê Thị Hoa",
-      studio: "Royal Wedding",
-      service: "Thuê váy cưới",
-      rating: 2,
-      comment: "Váy không đúng như hình, chất liệu kém. Nhân viên thái độ không tốt.",
-      date: "2024-01-18",
-      status: "flagged",
-      helpful: 3,
-      reported: 5,
-      response: null,
-    },
-    {
-      id: "RV004",
-      customer: "Phạm Minh Tuấn",
-      studio: "Dream Studio",
-      service: "Makeup dự tiệc",
-      rating: 5,
-      comment: "Rất hài lòng với dịch vụ. Makeup đẹp, bền màu cả ngày. Giá cả hợp lý.",
-      date: "2024-01-17",
-      status: "published",
-      helpful: 12,
-      reported: 0,
-      response: "Cảm ơn anh đã tin tưởng Dream Studio!",
-    },
-  ]
+  // Thêm phản hồi cho đánh giá
+  const addReviewResponse = (id: string, newResponse: string) => {
+    setReviews(reviews.map((review) =>
+      review.id === id ? { ...review, response: newResponse } : review
+    ))
+  }
+
+  // Lấy dữ liệu thống kê từ mảng reviews động
+  const totalReviews = reviews.length
+  const averageRating = (
+    reviews.reduce((acc, curr) => acc + curr.rating, 0) / totalReviews
+  ).toFixed(1)
+  const fiveStars = reviews.filter((r) => r.rating === 5).length
+  const fourStars = reviews.filter((r) => r.rating === 4).length
+  const threeStars = reviews.filter((r) => r.rating === 3).length
+  const twoStars = reviews.filter((r) => r.rating === 2).length
+  const oneStar = reviews.filter((r) => r.rating === 1).length
+  const flaggedReviews = reviews.filter((r) => r.status === "flagged").length
+
+  const reviewStats = {
+    totalReviews,
+    averageRating,
+    fiveStars,
+    fourStars,
+    threeStars,
+    twoStars,
+    oneStar,
+    flaggedReviews,
+  }
 
   const getStarRating = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -121,22 +150,57 @@ export function ReviewManagement() {
     return matchesSearch && matchesRating
   })
 
+  // Component Dialog để trả lời đánh giá
+  const ReplyDialog = ({ review }: { review: any }) => {
+    const [reply, setReply] = useState("")
+
+    const handleReply = () => {
+      addReviewResponse(review.id, reply)
+      setReply("")
+    }
+
+    return (
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+            <MessageSquare className="h-4 w-4" />
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Trả lời đánh giá của {review.customer}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm font-medium">Nội dung đánh giá:</p>
+            <p className="text-gray-700 italic border-l-4 border-gray-200 pl-4">{review.comment}</p>
+            <Textarea
+              placeholder="Nhập phản hồi của bạn..."
+              value={reply}
+              onChange={(e) => setReply(e.target.value)}
+            />
+          </div>
+          <div className="flex justify-end gap-2">
+            <DialogClose asChild>
+              <Button variant="ghost">Hủy</Button>
+            </DialogClose>
+            <DialogClose asChild>
+              <Button onClick={handleReply}>
+                Gửi phản hồi
+                <Send className="w-4 h-4 ml-2" />
+              </Button>
+            </DialogClose>
+          </div>
+        </DialogContent>
+      </Dialog>
+    )
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-3xl font-bold text-gray-900">Quản lý Đánh giá</h2>
           <p className="text-gray-600 mt-1">Theo dõi và quản lý đánh giá từ khách hàng</p>
-        </div>
-        <div className="flex gap-3">
-          <Button variant="outline" className="gap-2">
-            <Filter className="h-4 w-4" />
-            Bộ lọc nâng cao
-          </Button>
-          <Button className="gap-2 bg-gradient-to-r from-yellow-500 to-orange-500">
-            <Star className="h-4 w-4" />
-            Báo cáo đánh giá
-          </Button>
         </div>
       </div>
 
@@ -148,10 +212,6 @@ export function ReviewManagement() {
               <div>
                 <p className="text-yellow-700 text-sm font-semibold uppercase tracking-wide">Tổng đánh giá</p>
                 <p className="text-3xl font-bold text-yellow-900 mt-2">{reviewStats.totalReviews.toLocaleString()}</p>
-                <div className="flex items-center mt-2">
-                  <TrendingUp className="h-4 w-4 text-green-600 mr-1" />
-                  <span className="text-green-600 text-sm font-medium">+12% tháng này</span>
-                </div>
               </div>
               <div className="bg-yellow-500 p-3 rounded-xl">
                 <MessageSquare className="h-8 w-8 text-white" />
@@ -167,7 +227,7 @@ export function ReviewManagement() {
                 <p className="text-green-700 text-sm font-semibold uppercase tracking-wide">Đánh giá TB</p>
                 <div className="flex items-center mt-2">
                   <p className="text-3xl font-bold text-green-900">{reviewStats.averageRating}</p>
-                  <div className="flex ml-2">{getStarRating(Math.round(reviewStats.averageRating))}</div>
+                  <div className="flex ml-2">{getStarRating(Math.round(parseFloat(reviewStats.averageRating)))}</div>
                 </div>
                 <p className="text-green-600 text-sm mt-1">Từ {reviewStats.totalReviews} đánh giá</p>
               </div>
@@ -217,9 +277,15 @@ export function ReviewManagement() {
       {/* Tabs */}
       <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-3 bg-gray-100">
-          <TabsTrigger value="overview">Tổng quan</TabsTrigger>
-          <TabsTrigger value="reviews">Đánh giá</TabsTrigger>
-          <TabsTrigger value="flagged">Báo cáo</TabsTrigger>
+          <TabsTrigger value="overview"
+            className="text-black data-[state=active]:bg-amber-100 data-[state=active]:text-black"
+          >Tổng quan</TabsTrigger>
+          <TabsTrigger value="reviews"
+            className="text-black data-[state=active]:bg-amber-100 data-[state=active]:text-black"
+          >Đánh giá</TabsTrigger>
+          <TabsTrigger value="flagged"
+            className="text-black data-[state=active]:bg-amber-100 data-[state=active]:text-black"
+          >Báo cáo</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
@@ -386,7 +452,7 @@ export function ReviewManagement() {
                       </div>
                     </div>
 
-                    <div className="flex gap-2 ml-4">
+                    <div className="flex flex-col gap-2 ml-4">
                       <Dialog>
                         <DialogTrigger asChild>
                           <Button variant="outline" size="sm" className="h-8 w-8 p-0">
@@ -420,11 +486,7 @@ export function ReviewManagement() {
                           </div>
                         </DialogContent>
                       </Dialog>
-                      {review.status === "flagged" && (
-                        <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
-                          <Flag className="h-4 w-4" />
-                        </Button>
-                      )}
+                      <ReplyDialog review={review} />
                     </div>
                   </div>
                 </CardContent>
@@ -461,10 +523,10 @@ export function ReviewManagement() {
                           </p>
                         </div>
                         <div className="flex gap-2">
-                          <Button size="sm" variant="outline">
+                          <Button size="sm" variant="outline" onClick={() => updateReviewStatus(review.id, "published")}>
                             Duyệt
                           </Button>
-                          <Button size="sm" className="bg-red-600 hover:bg-red-700">
+                          <Button size="sm" className="bg-red-600 hover:bg-red-700" onClick={() => updateReviewStatus(review.id, "hidden")}>
                             Ẩn
                           </Button>
                         </div>

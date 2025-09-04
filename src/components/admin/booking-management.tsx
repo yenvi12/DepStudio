@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
 import { Button } from "../../components/ui/button"
@@ -8,6 +6,16 @@ import { Badge } from "../../components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select"
 import { Calendar, Clock, MapPin, User, DollarSign, Filter, Search, Eye, Edit, X } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../../components/ui/dialog"
+import { Label } from "../../components/ui/label"
 
 interface Booking {
   id: string
@@ -59,11 +67,40 @@ const bookings: Booking[] = [
     location: "Quận 7, TP.HCM",
     phone: "0901234569",
   },
+  {
+    id: "BK004",
+    customer: "Phạm Văn Long",
+    studio: "Artistic Lens",
+    service: "Chụp ảnh kỷ yếu",
+    date: "2024-02-05",
+    time: "08:30",
+    status: "pending",
+    amount: 3200000,
+    location: "Quận 5, TP.HCM",
+    phone: "0901234570",
+  },
+  {
+    id: "BK005",
+    customer: "Mai Phương Thảo",
+    studio: "Dreamy Photo",
+    service: "Makeup dự tiệc",
+    date: "2024-02-10",
+    time: "17:00",
+    status: "cancelled",
+    amount: 800000,
+    location: "Quận Gò Vấp, TP.HCM",
+    phone: "0901234571",
+  },
 ]
 
 export function BookingManagement() {
   const [selectedStatus, setSelectedStatus] = useState("all")
   const [searchTerm, setSearchTerm] = useState("")
+
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
+  const [showDetailDialog, setShowDetailDialog] = useState(false)
+  const [showEditDialog, setShowEditDialog] = useState(false)
+  const [showCancelDialog, setShowCancelDialog] = useState(false)
 
   const filteredBookings = bookings.filter((booking) => {
     const matchesStatus = selectedStatus === "all" || booking.status === selectedStatus
@@ -97,6 +134,34 @@ export function BookingManagement() {
     cancelled: bookings.filter((b) => b.status === "cancelled").length,
   }
 
+  // Handle actions
+  const handleView = (booking: Booking) => {
+    setSelectedBooking(booking)
+    setShowDetailDialog(true)
+  }
+
+  const handleEdit = (booking: Booking) => {
+    setSelectedBooking(booking)
+    setShowEditDialog(true)
+  }
+
+  const handleCancel = (booking: Booking) => {
+    setSelectedBooking(booking)
+    setShowCancelDialog(true)
+  }
+
+  const handleSaveEdit = () => {
+    console.log("Saving changes for booking:", selectedBooking)
+    // Here you would implement logic to save the changes, e.g., an API call
+    setShowEditDialog(false)
+  }
+
+  const handleConfirmCancel = () => {
+    console.log("Cancelling booking:", selectedBooking)
+    // Here you would implement logic to cancel the booking, e.g., an API call
+    setShowCancelDialog(false)
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -104,16 +169,7 @@ export function BookingManagement() {
           <h2 className="text-3xl font-bold text-gray-900">Quản lý Đặt lịch</h2>
           <p className="text-gray-600 mt-1">Theo dõi và quản lý tất cả đặt lịch trong hệ thống</p>
         </div>
-        <div className="flex gap-3">
-          <Button variant="outline" className="gap-2">
-            <Filter className="h-4 w-4" />
-            Bộ lọc nâng cao
-          </Button>
-          <Button className="gap-2 bg-gradient-to-r from-blue-500 to-purple-500">
-            <Calendar className="h-4 w-4" />
-            Xuất báo cáo
-          </Button>
-        </div>
+        
       </div>
 
       {/* Booking Stats */}
@@ -266,14 +322,14 @@ export function BookingManagement() {
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                        <Button variant="outline" size="sm" className="h-8 w-8 p-0" onClick={() => handleView(booking)}>
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                        <Button variant="outline" size="sm" className="h-8 w-8 p-0" onClick={() => handleEdit(booking)}>
                           <Edit className="h-4 w-4" />
                         </Button>
                         {booking.status === "pending" && (
-                          <Button variant="outline" size="sm" className="h-8 w-8 p-0 text-red-600 hover:text-red-700">
+                          <Button variant="outline" size="sm" className="h-8 w-8 p-0 text-red-600 hover:text-red-700" onClick={() => handleCancel(booking)}>
                             <X className="h-4 w-4" />
                           </Button>
                         )}
@@ -286,6 +342,145 @@ export function BookingManagement() {
           </div>
         </CardContent>
       </Card>
+
+      {/* View Booking Dialog */}
+      <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Chi tiết Đặt lịch #{selectedBooking?.id}</DialogTitle>
+            <DialogDescription>
+              Xem thông tin chi tiết của đặt lịch này.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedBooking && (
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right font-medium">Khách hàng</Label>
+                <div className="col-span-3">{selectedBooking.customer} ({selectedBooking.phone})</div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right font-medium">Studio</Label>
+                <div className="col-span-3">{selectedBooking.studio}</div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right font-medium">Dịch vụ</Label>
+                <div className="col-span-3">{selectedBooking.service}</div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right font-medium">Thời gian</Label>
+                <div className="col-span-3">{selectedBooking.date} lúc {selectedBooking.time}</div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right font-medium">Trạng thái</Label>
+                <div className="col-span-3">{getStatusBadge(selectedBooking.status)}</div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right font-medium">Số tiền</Label>
+                <div className="col-span-3">{selectedBooking.amount.toLocaleString("vi-VN")}đ</div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right font-medium">Địa chỉ</Label>
+                <div className="col-span-3">{selectedBooking.location}</div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button onClick={() => setShowDetailDialog(false)}>Đóng</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Booking Dialog */}
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Chỉnh sửa Đặt lịch #{selectedBooking?.id}</DialogTitle>
+            <DialogDescription>
+              Thay đổi thông tin đặt lịch và lưu lại.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedBooking && (
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="customer" className="text-right">
+                  Khách hàng
+                </Label>
+                <Input
+                  id="customer"
+                  defaultValue={selectedBooking.customer}
+                  className="col-span-3"
+                  // Add onChange handler to update state for editing
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="date" className="text-right">
+                  Ngày
+                </Label>
+                <Input
+                  id="date"
+                  type="date"
+                  defaultValue={selectedBooking.date}
+                  className="col-span-3"
+                  // Add onChange handler
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="time" className="text-right">
+                  Giờ
+                </Label>
+                <Input
+                  id="time"
+                  type="time"
+                  defaultValue={selectedBooking.time}
+                  className="col-span-3"
+                  // Add onChange handler
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="status" className="text-right">
+                  Trạng thái
+                </Label>
+                <Select value={selectedBooking.status} onValueChange={(value) => {
+                    // This is a mock change, in a real app you'd update state properly
+                    console.log("Status changed to", value);
+                  }}
+                >
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending">Chờ xác nhận</SelectItem>
+                    <SelectItem value="confirmed">Đã xác nhận</SelectItem>
+                    <SelectItem value="completed">Hoàn thành</SelectItem>
+                    <SelectItem value="cancelled">Đã hủy</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowEditDialog(false)}>Hủy</Button>
+            <Button onClick={handleSaveEdit}>Lưu thay đổi</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Cancel Booking Dialog */}
+      <Dialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Xác nhận Hủy Đặt lịch</DialogTitle>
+            <DialogDescription>
+              Bạn có chắc chắn muốn hủy đặt lịch #<span className="font-semibold">{selectedBooking?.id}</span> của khách hàng <span className="font-semibold">{selectedBooking?.customer}</span> không?
+              Thao tác này không thể hoàn tác.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowCancelDialog(false)}>Không, giữ lại</Button>
+            <Button variant="destructive" onClick={handleConfirmCancel}>Đúng, hủy bỏ</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

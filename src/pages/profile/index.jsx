@@ -259,12 +259,20 @@ export default function ProfilePage() {
           {/* Main Content */}
           <div className="lg:col-span-3">
             <Tabs defaultValue="profile" className="w-full">
-              <TabsList className="grid w-full grid-cols-5">
-                <TabsTrigger value="profile">Hồ sơ</TabsTrigger>
-                <TabsTrigger value="bookings">Đặt lịch</TabsTrigger>
-                <TabsTrigger value="favorites">Yêu thích</TabsTrigger>
-                <TabsTrigger value="reviews">Đánh giá</TabsTrigger>
-                <TabsTrigger value="settings">Cài đặt</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="profile"
+                className="text-black data-[state=active]:bg-amber-100 data-[state=active]:text-black"
+                >Hồ sơ</TabsTrigger>
+                <TabsTrigger value="bookings"
+                className="text-black data-[state=active]:bg-amber-100 data-[state=active]:text-black"
+                >Đặt lịch</TabsTrigger>
+                <TabsTrigger value="favorites"
+                className="text-black data-[state=active]:bg-amber-100 data-[state=active]:text-black"
+                >Yêu thích</TabsTrigger>
+                <TabsTrigger value="reviews"
+                className="text-black data-[state=active]:bg-amber-100 data-[state=active]:text-black"
+                >Đánh giá</TabsTrigger>
+                
               </TabsList>
 
               {/* Profile Tab */}
@@ -529,82 +537,7 @@ export default function ProfilePage() {
                 ))}
               </TabsContent>
 
-              {/* Settings Tab */}
-              <TabsContent value="settings" className="space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Bell className="w-5 h-5" />
-                      Thông báo
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-medium">Email thông báo</h4>
-                        <p className="text-sm text-gray-600">Nhận thông báo qua email</p>
-                      </div>
-                      <input type="checkbox" className="toggle" defaultChecked />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-medium">SMS thông báo</h4>
-                        <p className="text-sm text-gray-600">Nhận thông báo qua SMS</p>
-                      </div>
-                      <input type="checkbox" className="toggle" />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-medium">Thông báo khuyến mãi</h4>
-                        <p className="text-sm text-gray-600">Nhận thông tin ưu đãi</p>
-                      </div>
-                      <input type="checkbox" className="toggle" defaultChecked />
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Shield className="w-5 h-5" />
-                      Bảo mật
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <Button variant="outline" className="w-full justify-start">Đổi mật khẩu</Button>
-                    <Button variant="outline" className="w-full justify-start">Xác thực 2 bước</Button>
-                    <Button variant="outline" className="w-full justify-start">Quản lý thiết bị đăng nhập</Button>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <CreditCard className="w-5 h-5" />
-                      Thanh toán
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <Button variant="outline" className="w-full justify-start">Quản lý phương thức thanh toán</Button>
-                    <Button variant="outline" className="w-full justify-start">Lịch sử giao dịch</Button>
-                    <Button variant="outline" className="w-full justify-start">Hóa đơn & biên lai</Button>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-red-600">Vùng nguy hiểm</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <Button variant="outline" className="w-full justify-start text-red-600 border-red-200 hover:bg-red-50">
-                      Tạm khóa tài khoản
-                    </Button>
-                    <Button variant="outline" className="w-full justify-start text-red-600 border-red-200 hover:bg-red-50">
-                      Xóa tài khoản vĩnh viễn
-                    </Button>
-                  </CardContent>
-                </Card>
-              </TabsContent>
+            
             </Tabs>
           </div>
         </div>
