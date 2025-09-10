@@ -33,24 +33,15 @@ export function Header() {
   </span>
 </Link>
 
-
-
-         {/* Navigation */}
-<nav className="hidden md:flex items-center space-x-8">
-  <Link to="/" className="text-white hover:text-white/80 transition-colors">
-    Trang chủ
-  </Link>
-</nav>
-
 {/* Navigation */}
 <nav className="hidden md:flex items-center space-x-8">
-  <Link to="/" className="text-white hover:text-white/80 transition-colors">
+  <Link to="/" className="text-black hover:text-black/80 transition-colors">
     Trang chủ
   </Link>
 
   {/* Services Dropdown */}
   <DropdownMenu>
-    <DropdownMenuTrigger className="flex items-center space-x-1 text-white hover:text-white/80 transition-colors">
+    <DropdownMenuTrigger className="flex items-center space-x-1 text-black hover:text-black/80 transition-colors">
       <span>Dịch vụ</span>
       <ChevronDown className="w-4 h-4" />
     </DropdownMenuTrigger>

@@ -428,7 +428,7 @@ export default function StudiosPage() {
                             <Link to={`/studios/${studio.id}`}>Chi tiết</Link>
                           </Button>
                           <Button size="sm" asChild>
-                            <Link to={`/booking?studio=${studio.id}`}>
+                            <Link to={`/booking?studios=${studio.id}`}>
                               <CalendarIcon className="w-4 h-4 mr-1" />
                               Đặt lịch
                             </Link>

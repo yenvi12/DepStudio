@@ -41,7 +41,7 @@ export default function StudioDetailPage() {
 
   // Mock data cho studio
   const studioData = {
-    id,
+    id:"1",
     name: "Studio Ánh Dương",
     tagline: "Chuyên gia nhiếp ảnh cưới hàng đầu",
     rating: 4.9,

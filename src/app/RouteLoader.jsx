@@ -4,6 +4,7 @@
 import React, { Suspense, lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import RootLayout from "./RootLayout.jsx";
+import StudioDetailPage from "../pages/studio/detail.jsx";
 
 // 👉 Lazy-load các page để tách bundle
 const Home =          lazy(() => import("../pages/Home.jsx"));
@@ -45,7 +46,8 @@ export default function RouteLoader() {
           <Route path="/promotions/*" element={<Promotions />} />
           <Route path="/register" element={<Register />} />
           <Route path="/rental/*" element={<Rental />} />
-          <Route path="/studio/*" element={<Studio />} />
+          <Route path="/studios/*" element={<Studio />} />
+          <Route path="/studios/:id" element={<StudioDetailPage />} />
 
           {/* 👇 Thêm 2 route mới */}
           <Route path="/shop-owner" element={<ShopOwner />} />
