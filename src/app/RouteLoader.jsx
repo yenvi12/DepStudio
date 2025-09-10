@@ -5,6 +5,8 @@ import React, { Suspense, lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import RootLayout from "./RootLayout.jsx";
 import StudioDetailPage from "../pages/studio/detail.jsx";
+import MakeupArtistDetailPage from "../pages/makeup/detail.jsx";
+import RentalDetailPage from "../pages/rental/detail.jsx";
 
 // 👉 Lazy-load các page để tách bundle
 const Home =          lazy(() => import("../pages/Home.jsx"));
@@ -41,11 +43,13 @@ export default function RouteLoader() {
           <Route path="/booking/*" element={<Booking />} />
           <Route path="/dashboard/*" element={<Dashboard />} />
           <Route path="/makeup/*" element={<Makeup />} />
+          <Route path="/makeup/:id" element={<MakeupArtistDetailPage/>} />
           <Route path="/news/*" element={<News />} />
           <Route path="/profile/*" element={<Profile />} />
           <Route path="/promotions/*" element={<Promotions />} />
           <Route path="/register" element={<Register />} />
           <Route path="/rental/*" element={<Rental />} />
+          <Route path="/rental/:id" element={<RentalDetailPage />} />
           <Route path="/studios/*" element={<Studio />} />
           <Route path="/studios/:id" element={<StudioDetailPage />} />
 

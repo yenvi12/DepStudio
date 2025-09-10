@@ -13,7 +13,7 @@ export function Header() {
   const { user, logout } = useAuth()
 
   return (
-    <header className="bg-white/10 backdrop-blur-md border-b border-white/20 shadow-sm">
+    <header className="bg-white backdrop-blur-md border-b border-white/20 shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -26,8 +26,8 @@ export function Header() {
     />
   </div>
   <span
-    className="text-[40px] md:text-[30px] font-bold gradient-text leading-none"
-    style={{ fontFamily: "Simplesnails" }}
+    className="text-[25px] md:text-[30px] font-median gradient-text leading-none"
+    style={{ fontFamily: "TQ-Kingston" }}
   >
     DepStudio
   </span>
@@ -35,31 +35,31 @@ export function Header() {
 
 {/* Navigation */}
 <nav className="hidden md:flex items-center space-x-8">
-  <Link to="/" className="text-black hover:text-black/80 transition-colors">
+  <Link to="/" className=" font-bold text-[#6F5D4F] hover:bg-[#E1DACA]">
     Trang chủ
   </Link>
 
   {/* Services Dropdown */}
   <DropdownMenu>
-    <DropdownMenuTrigger className="flex items-center space-x-1 text-black hover:text-black/80 transition-colors">
+    <DropdownMenuTrigger className="flex items-center space-x-1  font-bold text-[#6F5D4F] hover:bg-[#E1DACA]">
       <span>Dịch vụ</span>
       <ChevronDown className="w-4 h-4" />
     </DropdownMenuTrigger>
     <DropdownMenuContent className="w-56 glass-card border-white/20">
       <DropdownMenuItem asChild>
-        <Link to="/studios" className="flex items-center space-x-2 text-white">
+        <Link to="/studios" className="flex items-center space-x-2 text-[#6F5D4F]">
           <Camera className="w-4 h-4" />
           <span>Studio chụp ảnh</span>
         </Link>
       </DropdownMenuItem>
       <DropdownMenuItem asChild>
-        <Link to="/makeup" className="flex items-center space-x-2 text-white">
+        <Link to="/makeup" className="flex items-center space-x-2 text-[#6F5D4F]">
           <Palette className="w-4 h-4" />
           <span>Makeup & Trang điểm</span>
         </Link>
       </DropdownMenuItem>
       <DropdownMenuItem asChild>
-        <Link to="/rental" className="flex items-center space-x-2 text-white">
+        <Link to="/rental" className="flex items-center space-x-2 text-[#6F5D4F]">
           <Shirt className="w-4 h-4" />
           <span>Thuê trang phục</span>
         </Link>
@@ -67,10 +67,10 @@ export function Header() {
     </DropdownMenuContent>
   </DropdownMenu>
 
-  <Link to="/promotions" className="text-white hover:text-white/80 transition-colors">
+  <Link to="/promotions" className=" font-bold text-[#6F5D4F] hover:bg-[#E1DACA]">
     Ưu đãi
   </Link>
-  <Link to="/news" className="text-white hover:text-white/80 transition-colors">
+  <Link to="/news" className="font-bold text-[#6F5D4F] hover:bg-[#E1DACA]">
     Tin tức
   </Link>
 </nav>
@@ -117,10 +117,10 @@ export function Header() {
               </>
             ) : (
               <div className="flex items-center space-x-2">
-  <Button variant="ghost" className="text-white hover:bg-white/10" asChild>
+  <Button variant="ghost" className="text-[#6F5D4F] hover:bg-white/10" asChild>
     <Link to="/login">Đăng nhập</Link>
   </Button>
-  <Button className="bg-gradient-button hover:opacity-90" asChild>
+  <Button className="text-[#6F5D4F] bg-gradient-button hover:opacity-90" asChild>
     <Link to="/register">Đăng ký</Link>
   </Button>
 </div>
