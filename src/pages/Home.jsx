@@ -25,7 +25,7 @@ export default function Home() {
     {
       id: "1",
       name: "Studio Ánh Dương",
-      type: "studio",
+      type: "studios",
       rating: 4.9,
       reviews: 127,
       location: "Quận 1, TP.HCM",
@@ -146,7 +146,7 @@ export default function Home() {
                     variant="secondary"
                     className="absolute top-2 right-2 bg-[#C1B6A3] text-white"
                   >
-                    {service.type === "studio"
+                    {service.type === "studios"
                       ? "Studio"
                       : service.type === "makeup"
                       ? "Makeup"
@@ -403,7 +403,7 @@ export default function Home() {
           </div>
 
           <div className="border-t border-[#C1B6A3] mt-8 pt-6 text-center text-sm text-[#6F5D4F]/70">
-            <p>&copy; 2024 BookingHub. Tất cả quyền được bảo lưu.</p>
+            <p>&copy; 2025 DepStudio. Tất cả quyền được bảo lưu.</p>
           </div>
         </div>
       </footer>

@@ -32,6 +32,8 @@ export default function RentalPage() {
   const [viewMode, setViewMode] = useState("grid") // "grid" | "list"
   const [showFilters, setShowFilters] = useState(false)
 
+  
+
   // Mock data
   const rentalShops = [
     {
@@ -145,8 +147,8 @@ export default function RentalPage() {
       {/* Hero Section */}
       <div className="bg-[#F5F1EB] text-[#6F5D4F] text-center py-12">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl font-bold mb-4">Thuê Trang Phục</h1>
-          <p className="text-xl mb-6">Tìm kiếm cửa hàng cho thuê trang phục cưới và dự tiệc</p>
+          <h1 className="text-[40px] md:text-[40px] font-medibold mb-4" style={{ fontFamily: "TQ-Kingston" }}>Thuê Trang Phục</h1>
+          <p  className="text-[40px] md:text-[30px] mb-6" style={{ fontFamily: "Simplesnails" }}>Tìm kiếm cửa hàng cho thuê trang phục </p>
 
           {/* Search Bar */}
           <div className="w-full flex justify-center">
